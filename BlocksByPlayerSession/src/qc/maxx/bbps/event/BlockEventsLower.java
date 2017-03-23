@@ -21,10 +21,7 @@ import qc.maxx.bbps.util.ConfigHandler;
 import qc.maxx.bbps.util.Util;
 
 public class BlockEventsLower implements Listener {
-	private BBPSPlugin plugin;
-
 	public BlockEventsLower(BBPSPlugin plugin) {
-		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -35,7 +32,7 @@ public class BlockEventsLower implements Listener {
 			return;
 
 		if (e.getAction() == Action.PHYSICAL) {
-			PlayerSession p = plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
+			PlayerSession p = Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
 
 			if (ConfigHandler.blocksChangeLimit > 0) {
 				if (p.getNumberOfChangedBlocks() >= ConfigHandler.blocksChangeLimit && !e.getPlayer().hasPermission("bbps.bypass.changedblocks")) {
@@ -61,7 +58,7 @@ public class BlockEventsLower implements Listener {
 		if (e.getPlayer().hasPermission("bbps.bypass.overall"))
 			return;
 
-		PlayerSession p = plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
+		PlayerSession p = Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
 
 		if (ConfigHandler.blocksChangeLimit > 0) {
 			if (p.getNumberOfChangedBlocks() >= ConfigHandler.blocksChangeLimit && !e.getPlayer().hasPermission("bbps.bypass.changedblocks")) {
@@ -117,7 +114,7 @@ public class BlockEventsLower implements Listener {
 			return;
 
 		BlockState b = e.getBlockReplacedState();
-		PlayerSession p = plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
+		PlayerSession p = Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString());
 
 		if (ConfigHandler.blocksPlaceLimit > 0) {
 			if (p.getNumberOfPlacedBlocks() >= ConfigHandler.blocksPlaceLimit && !e.getPlayer().hasPermission("bbps.bypass.placedblocks")) {

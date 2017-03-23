@@ -22,10 +22,7 @@ import qc.maxx.bbps.util.StringNumberComparator;
 import qc.maxx.bbps.util.Util;
 
 public class InventoryEvents implements Listener {
-	private BBPSPlugin plugin;
-
 	public InventoryEvents(BBPSPlugin plugin) {
-		this.plugin = plugin;
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -79,7 +76,7 @@ public class InventoryEvents implements Listener {
 						if (toIndex > playersList.size())
 							toIndex = playersList.size();
 
-						fillInventoryWithPlayersStats(playersList.subList(0, toIndex), clicker, playersInvStats, 0, (playersInvStats.length == 1));
+						fillInventoryWithPlayersForStats(playersList.subList(0, toIndex), clicker, playersInvStats, 0, (playersInvStats.length == 1));
 						clicker.openInventory(playersInvStats[0]);
 					}
 
@@ -142,7 +139,7 @@ public class InventoryEvents implements Listener {
 								if (toIndex > playersList.size())
 									toIndex = playersList.size();
 
-								fillInventoryWithPlayersStats(playersList.subList(fromIndex, (nextInv == playersInvStats.length) ? playersList.size() : toIndex), clicker,
+								fillInventoryWithPlayersForStats(playersList.subList(fromIndex, (nextInv == playersInvStats.length) ? playersList.size() : toIndex), clicker,
 										playersInvStats, nextInv, (playersInvStats.length == 1));
 								clicker.openInventory(playersInvStats[nextInv]);
 							}
@@ -179,7 +176,7 @@ public class InventoryEvents implements Listener {
 								if (previousInv == 0)
 									fromIndex = 0;
 
-								fillInventoryWithPlayersStats(playersList.subList(fromIndex, toIndex), clicker, playersInvStats, previousInv, (playersInvStats.length == 1));
+								fillInventoryWithPlayersForStats(playersList.subList(fromIndex, toIndex), clicker, playersInvStats, previousInv, (playersInvStats.length == 1));
 								clicker.openInventory(playersInvStats[previousInv]);
 							}
 						}
@@ -191,7 +188,8 @@ public class InventoryEvents implements Listener {
 		}
 	}
 
-	public void fillInventoryWithPlayersStats(List<String> players, Player clicker, Inventory[] inv, int invNumber, boolean onlyOneInv) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void fillInventoryWithPlayersForStats(List<String> players, Player clicker, Inventory[] inv, int invNumber, boolean onlyOneInv) {
 		int currentSlot = 0;
 		players = players.subList(0, players.size());
 
@@ -249,7 +247,31 @@ public class InventoryEvents implements Listener {
 					}
 				}
 
-				inv[invNumber].setItem(currentSlot, getPlayerHead(p));
+				PlayerSession playerSession = Util.getPlayerSessionByUUID(Bukkit.getPlayer(p).getUniqueId().toString());
+				ItemStack skull = getPlayerHead(p);
+				SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+
+				List<String> itemLore = new ArrayList();
+				itemLore.add(" ");
+
+				if (Bukkit.getPlayer(p).hasPermission("bbps.bypass.overall")) {
+					itemLore.add(ConfigHandler.playerHasBypassPermMsg);
+				} else {
+					if (ConfigHandler.blocksChangeLimit > 0) {
+						itemLore.add(ConfigHandler.placedBlocksMsg + playerSession.getPlacedBlocks().size()
+								+ (Bukkit.getPlayerExact(p).hasPermission("bbps.bypass.placedblocks") ? "" : " / " + ConfigHandler.blocksPlaceLimit));
+						itemLore.add(ConfigHandler.changedBlocksMsg + playerSession.getChangedBlocks().size()
+								+ (Bukkit.getPlayerExact(p).hasPermission("bbps.bypass.changedblocks") ? "" : " / " + ConfigHandler.blocksChangeLimit));
+					} else {
+						itemLore.add(ConfigHandler.placedBlocksMsg + playerSession.getPlacedBlocks().size());
+						itemLore.add(ConfigHandler.changedBlocksMsg + playerSession.getChangedBlocks().size());
+					}
+
+				}
+				skullMeta.setLore(itemLore);
+				skull.setItemMeta(skullMeta);
+
+				inv[invNumber].setItem(currentSlot, skull);
 				currentSlot++;
 			}
 		}
@@ -349,35 +371,12 @@ public class InventoryEvents implements Listener {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ItemStack getPlayerHead(String name) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		PlayerSession p = null;
-		try {
-			p = plugin.getPlayerSessionByUUID(Bukkit.getPlayerExact(name).getUniqueId().toString());
-		} catch (NullPointerException npe) {
-		}
 
 		skullMeta.setOwner(name);
 		skullMeta.setDisplayName(Util.colorize("&9" + name));
-
-		if (p != null && !Bukkit.getPlayer(name).hasPermission("bbps.bypass.overall")) {
-			List<String> itemLore = new ArrayList();
-			itemLore.add(" ");
-
-			if (ConfigHandler.blocksChangeLimit > 0) {
-				itemLore.add(Util.colorize(ConfigHandler.placedBlocksMsg + p.getPlacedBlocks().size()
-						+ (Bukkit.getPlayerExact(name).hasPermission("bbps.bypass.placedblocks") ? "" : " / " + ConfigHandler.blocksPlaceLimit)));
-				itemLore.add(Util.colorize(ConfigHandler.changedBlocksMsg + p.getChangedBlocks().size()
-						+ (Bukkit.getPlayerExact(name).hasPermission("bbps.bypass.changedblocks") ? "" : " / " + ConfigHandler.blocksChangeLimit)));
-			} else {
-				itemLore.add(Util.colorize(ConfigHandler.placedBlocksMsg + p.getPlacedBlocks().size()));
-				itemLore.add(Util.colorize(ConfigHandler.changedBlocksMsg + p.getChangedBlocks().size()));
-			}
-
-			skullMeta.setLore(itemLore);
-		}
 
 		skull.setItemMeta(skullMeta);
 		return skull;

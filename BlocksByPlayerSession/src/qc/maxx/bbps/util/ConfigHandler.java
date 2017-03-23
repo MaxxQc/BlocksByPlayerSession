@@ -24,6 +24,7 @@ public class ConfigHandler {
 	public static String resetMenuName;
 	public static String nextPageItemName;
 	public static String previousPageItemName;
+	public static String playerHasBypassPermMsg;
 	public static String placedBlocksMsg;
 	public static String changedBlocksMsg;
 
@@ -115,6 +116,11 @@ public class ConfigHandler {
 			config.save();
 		}
 
+		if (config.get("players-list.bypass-player-msg") == null) {
+			config.set("players-list.bypass-player-msg", "&5Can place how many blocks he wants to");
+			config.save();
+		}
+		
 		if (config.get("players-list.placed-blocks-msg") == null) {
 			config.set("players-list.placed-blocks-msg", "&5Placed Blocks: &f");
 			config.save();
@@ -143,6 +149,7 @@ public class ConfigHandler {
 		resetMenuName = Util.colorize(config.getString("players-list.reset-menu-name"));
 		nextPageItemName = Util.colorize(config.getString("players-list.next-page-item-name"));
 		previousPageItemName = Util.colorize(config.getString("players-list.previous-page-item-name"));
+		playerHasBypassPermMsg = Util.colorize(config.getString("players-list.bypass-player-msg"));
 		placedBlocksMsg = Util.colorize(config.getString("players-list.placed-blocks-msg"));
 		changedBlocksMsg = Util.colorize(config.getString("players-list.changed-blocks-msg"));
 	}

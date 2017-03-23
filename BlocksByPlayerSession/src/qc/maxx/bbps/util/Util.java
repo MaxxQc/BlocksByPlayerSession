@@ -1,5 +1,8 @@
 package qc.maxx.bbps.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -9,13 +12,35 @@ import qc.maxx.bbps.session.BlockSession;
 import qc.maxx.bbps.session.PlayerSession;
 
 public class Util {
+	private static List<PlayerSession> playerSessions = new ArrayList<PlayerSession>();
+	
 	public static String colorize(String string) {
 		if (string == null) {
 			return null;
 		}
 		return string.replaceAll("&([0-9a-z])", "§$1");
 	}
+	
+	public static List<PlayerSession> getPlayerSessions() {
+		return playerSessions;
+	}
+	
+	public static void addPlayerSession(PlayerSession playerSession) {
+		playerSessions.add(playerSession);
+	}
 
+	public static void removePlayerSession(PlayerSession playerSession) {
+		playerSessions.remove(playerSession);
+	}
+
+	public static PlayerSession getPlayerSessionByUUID(String playerUIID) {
+		for (PlayerSession playerSession : playerSessions)
+			if (playerSession.getPlayerUUID().equals(playerUIID))
+				return playerSession;
+
+		return null;
+	}
+	
 	public static Location correctLocation(Location loc) {
 		return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}

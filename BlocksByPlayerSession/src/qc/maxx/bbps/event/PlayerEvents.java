@@ -30,19 +30,20 @@ public class PlayerEvents implements Listener {
 			Bukkit.getScheduler().cancelTask(taskIds.get(e.getPlayer().getUniqueId().toString()));
 			taskIds.remove(e.getPlayer().getUniqueId().toString());
 		}
-		plugin.addPlayerSession(new PlayerSession(e.getPlayer().getUniqueId().toString()));
+		
+		Util.addPlayerSession(new PlayerSession(e.getPlayer().getUniqueId().toString()));
 	}
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent e) {
 		if (ConfigHandler.timeLimit == 0) {
-			Util.replaceBlocksFromPlayer(plugin, plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
-			plugin.removePlayerSession(plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+			Util.replaceBlocksFromPlayer(plugin, Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+			Util.removePlayerSession(Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
 		} else {
 			int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					Util.replaceBlocksFromPlayer(plugin, plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
-					plugin.removePlayerSession(plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+					Util.replaceBlocksFromPlayer(plugin, Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+					Util.removePlayerSession(Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
 					taskIds.remove(e.getPlayer().getUniqueId().toString());
 				}
 			}, ConfigHandler.timeLimit * 20 * 60);
@@ -53,13 +54,13 @@ public class PlayerEvents implements Listener {
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent e) {
 		if (ConfigHandler.timeLimit == 0) {
-			Util.replaceBlocksFromPlayer(plugin, plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
-			plugin.removePlayerSession(plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+			Util.replaceBlocksFromPlayer(plugin, Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+			Util.removePlayerSession(Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
 		} else {
 			int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				public void run() {
-					Util.replaceBlocksFromPlayer(plugin, plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
-					plugin.removePlayerSession(plugin.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+					Util.replaceBlocksFromPlayer(plugin, Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
+					Util.removePlayerSession(Util.getPlayerSessionByUUID(e.getPlayer().getUniqueId().toString()));
 					taskIds.remove(e.getPlayer().getUniqueId().toString());
 				}
 			}, ConfigHandler.timeLimit * 20 * 60);
