@@ -38,9 +38,6 @@ public class InventoryEvents implements Listener {
 			for (Player p : Bukkit.getOnlinePlayers())
 				playersList.add(p.getName());
 
-			for (int i = 1; i <= 325; i++)
-				playersList.add(String.valueOf(i));
-
 			Collections.sort(playersList, new StringNumberComparator());
 
 			if (e.getWhoClicked() instanceof Player) {
