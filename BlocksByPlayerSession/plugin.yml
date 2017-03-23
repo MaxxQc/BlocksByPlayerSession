@@ -1,0 +1,29 @@
+name: BlocksByPlayerSession
+main: qc.maxx.bbps.main.BBPSPlugin
+version: 1.2
+author: Maxx_Qc
+description: BBPS.
+commands:
+  bbps:
+    description: Open the the BBPS plugin menu.
+    usage: /bbps
+    permission: 
+permissions:
+  bbps.bypass.overall:
+    description: Bypass the whole plugin.
+    default: op
+  bbps.bypass.placedblocks:
+    description: Bypass the placed blocks limit.
+    default: op
+  bbps.bypass.changedblocks:
+    description: Bypass the changed blocks limit.
+    default: op
+  bbps.menu.open:
+    description: Give access to the BBPS menu using the command.
+    default: op
+  bbps.menu.stats:
+    description: Give access to the stats section of the menu.
+    default: op
+  bbps.menu.reset:
+    description: Give access to the reset section of the menu.
+    default: op
