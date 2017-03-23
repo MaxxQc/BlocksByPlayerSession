@@ -14,13 +14,13 @@ public class Yaml {
 
 	public Yaml(File file) {
 		this.file = file;
-		if (!file.exists()) {
+		if (!file.exists())
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		
 		this.load();
 	}
 
